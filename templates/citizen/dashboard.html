@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% block title %}Dashboard{% endblock %}{% block content %}<div class="page-heading"><span
+        class="eyebrow">CITIZEN WORKSPACE</span>
+    <h1>Welcome, {{ user.first_name|default:user.email }}</h1>
+    <p>Your reports and city updates at a glance.</p>
+</div>
+<div class="stat-grid">{% for label,value in counts.items %}<div class="stat-card"><span>{{ label|title|cut:'_'
+            }}</span><strong>{{ value }}</strong></div>{% endfor %}</div>
+<div class="inline-actions"><a class="btn primary" href="{% url 'complaint_create' %}">＋ Report an issue</a><a
+        class="btn outline" href="{% url 'feed' %}">View city complaints</a></div>
+<section class="panel">
+    <h2>Recent complaints</h2>{% for item in complaints %}<a class="issue-row"
+        href="{% url 'complaint_detail' item.pk %}">{% if item.image %}<img class="issue-thumb"
+            src="{{ item.image.url }}" alt="">{% endif %}<div class="issue-info">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.category }} · {{ item.address|default:item.city.name }}</p>
+            <div class="meta"><span>{{ item.reference }}</span><span>{{ item.created_at|date:'j M Y' }}</span></div>
+        </div><span class="status {{ item.status }}">{{ item.get_status_display }}</span></a>{% empty %}<p>No complaints
+        yet. Start by reporting an issue in your neighbourhood.</p>{% endfor %}<p><a
+            href="{% url 'my_complaints' %}">See all my complaints →</a></p>
+</section>{% endblock %}

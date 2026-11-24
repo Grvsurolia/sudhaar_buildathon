@@ -35,7 +35,7 @@ def _complaints(request, queryset):
 def dashboard(request):
     if _admin(request.user): return redirect("admin_dashboard")
     base = Complaint.objects.filter(citizen=request.user)
-    counts = {"total": base.count(), "submitted": base.filter(status="submitted").count(), "pending": base.filter(status__in=["submitted", "review", "assigned"]).count(), "in_progress": base.filter(status="in_progress").count(), "citizen_resolved": base.filter(status="citizen_resolved").count(), "resolved": base.filter(status="resolved").count()}
+    counts = {"Total complaints": base.count(), "Submitted": base.filter(status="submitted").count(), "Pending": base.filter(status__in=["submitted", "review", "assigned"]).count(), "In progress": base.filter(status="in_progress").count(), "Citizen marked resolved": base.filter(status="citizen_resolved").count(), "Officially resolved": base.filter(status="resolved").count()}
     return render(request, "citizen/dashboard.html", {"counts": counts, "complaints": base.select_related("category", "city")[:5]})
 
 @login_required
@@ -100,7 +100,7 @@ def mark_resolved(request, pk):
 def admin_dashboard(request):
     if not _admin(request.user): raise Http404
     qs = Complaint.objects.all() if request.user.is_superuser else Complaint.objects.filter(city=request.user.city)
-    counts = {"total": qs.count(), "submitted": qs.filter(status="submitted").count(), "pending": qs.filter(status__in=["submitted", "review", "assigned"]).count(), "in_progress": qs.filter(status="in_progress").count(), "citizen_resolved": qs.filter(status="citizen_resolved").count(), "resolved": qs.filter(status="resolved").count()}
+    counts = {"Total complaints": qs.count(), "Submitted": qs.filter(status="submitted").count(), "Pending": qs.filter(status__in=["submitted", "review", "assigned"]).count(), "In progress": qs.filter(status="in_progress").count(), "Citizen marked resolved": qs.filter(status="citizen_resolved").count(), "Officially resolved": qs.filter(status="resolved").count()}
     return render(request, "admin_portal/dashboard.html", {"counts": counts, "complaints": qs.select_related("category", "citizen", "city")[:8]})
 
 @login_required

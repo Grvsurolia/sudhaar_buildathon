@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.views.static import serve
 from django.urls import include, path
 from apps.complaints import views
 
@@ -23,3 +24,7 @@ urlpatterns = [
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # Demo deployment support. Render Free's local storage is ephemeral; use
+    # object storage for production media delivery and persistence.
+    urlpatterns += [path("media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT})]
